@@ -1,0 +1,50 @@
+
+{% if to_do_list %}
+<table class="table table-hover">
+    {% for todo in to_do_list %}
+{% if todo.priority == 1 %}
+<tr class="row">
+{% elif todo.priority == 2 %}
+<tr class="row success">
+{% elif todo.priority == 3 %}
+<tr class="row warning">
+{% elif todo.priority == 4 %}
+<tr class="row danger">
+{% endif %}
+        <td class="col-sm-1">
+            <form method="post" action="{% url 'todo:todo' todo.pk %}">
+                {% csrf_token %}
+                <input type="hidden" name="_method" value="delete">
+                <input type="submit" class="btn btn-danger" value="x">
+            </form>
+        </td>
+        <td class="col-sm-8">
+            [순위: {{ todo.priority  }}]
+            <a href="{% url 'todo:todo' todo.pk %}">{{todo.title}}</a>
+        </td> <!-- 색깔로 우선순위 표시-->
+        <td class="col-sm-3">
+            {% if todo.deadline %}
+            {{ todo.deadline }}
+            {% else %}
+            미지정
+            {% endif %}
+        </td>
+        <td class="col-sm-2">
+            <form method="post" action="{% url 'todo:todo' todo.pk %}">
+                {% csrf_token %}
+                <input type="hidden" name="_method" value="put">
+                {% if todo.is_done == True %}
+                <input type="submit" class="btn btn-danger" value="X">
+                <input type="hidden" name="is_done" value=0>
+                {% else %}
+                <input type="submit" class="btn btn-danger" value="O">
+                <input type="hidden" name="is_done" value=1>
+                {% endif %}
+            </form>
+        </td>
+    </tr>
+    {% endfor %}
+</table>
+{% else %}
+    <div class="alert alert-info" role="alert">데이터가 없습니다.</div>
+{% endif %}

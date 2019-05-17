@@ -1,6 +1,11 @@
 {% extends 'todo/body.html' %}
 {% block title %}To do List 오류{% endblock %}
 {% block content %}
-ERROR {{ error_code }}<br />
-{{ error_message }}
+<article>
+    <section class="todo_section">
+        <h2>ERROR {{ error_code }}</h2>
+        {{ error_message }}<br />
+        <a href="{% url 'todo:index' %}" class="btn btn-default">처음으로</a>
+</section>
+</article>
 {% endblock %}

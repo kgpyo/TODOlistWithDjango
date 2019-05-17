@@ -10,7 +10,6 @@ import datetime
 
 from .models import *
 
-# Create your views here.
 def index(request):
     #글 작성시
     if request.method == "POST":
@@ -20,22 +19,57 @@ def index(request):
     }
     return render(request, 'todo/form.html', data)
 
+def print_error(request, error_code, msg = None):
+    if msg is None:
+        if error_code == 404:
+            msg = "존재하지 않는 게시글이거나 페이지를 찾을 수 없습니다."
+        if error_code == 500:
+            msg = "처리중 오류가 발생하였습니다."
+
+    return render(request, 
+        'todo/error.html', 
+        {
+            'error_code':error_code, 'error_message':msg
+        }
+    )
+
+class ProcessError(Exception):
+    def __init__(self, msg):
+        self.msg = msg
+    def __str__(self):
+        return self.msg
+
 def write_post(request):
-    input_data = {}
-    input_data['title'] = request.POST.get('title', None)
-    input_data['text'] = request.POST.get('text', "")
-    input_data['deadline'] = request.POST.get('deadline', None)
-    input_data['priority'] = request.POST.get('priority', 1)
-    if input_data['deadline'] and request.POST.get('setDeadline', 0) == "1":
-        input_data['deadline'] = parse(input_data['deadline']).date()
-    else:
-        input_data['deadline'] = None
+    try:
+        input_data = {
+            'title':request.POST.get('title', None),
+            'text':request.POST.get('text', ''),
+            'deadline': None,
+            'priority':request.POST.get('priority', 1)
+        }
+        deadline = request.POST.get('deadline',None)
+
+        if not input_data['title']:
+            raise ProcessError('제목을 입력해주세요')
+        if deadline and deadline is not '':
+            input_data['deadline'] = parse(deadline)
+        else:
+            input_data['deadline'] = None
+            
+    except ProcessError as e:
+        return print_error(request, 500, e)
+    except:
+        return print_error(request, 500)
+
     todolist = TodoList(**input_data)
     if todolist.is_valid():
         todolist.save()
+    else:
+        return print_error(request, 400, "잘못된 요청입니다. 입력하신 내용을 다시 한번 확인해주세요.")
        
     return HttpResponseRedirect(reverse('todo:index'))
 
+#리스트 뷰
 class TodoListDoneView(generic.ListView):
     model = TodoList
     context_object_name = 'to_do_list'
@@ -43,7 +77,8 @@ class TodoListDoneView(generic.ListView):
     board_name = 'Done'
 
     def get_queryset(self):
-        return TodoList.objects.filter(is_done=True).order_by('-write_date')
+        return TodoList.objects.filter(is_done=True).\
+            order_by('-priority', '-write_date')
 
     def get_context_data(self, **kwargs):
         data = super().get_context_data(**kwargs)
@@ -58,7 +93,8 @@ class TodoListDeadLineIsOverView(generic.ListView):
 
     def get_queryset(self):
         return TodoList.objects.filter(is_done=False, \
-        deadline__lt=datetime.date.today()).order_by('-write_date')
+        deadline__lt=datetime.date.today()).\
+            order_by('-priority', '-write_date')
 
     def get_context_data(self, **kwargs):
         data = super().get_context_data(**kwargs)
@@ -75,14 +111,14 @@ class TodoListView(generic.ListView):
         return TodoList.objects.filter(
             (Q(deadline__gte=datetime.date.today())&Q(is_done=False))|
             (Q(deadline__isnull=True)&Q(is_done=False))
-        ).order_by('-write_date')
+        ).order_by('-priority', '-write_date')
 
     def get_context_data(self, **kwargs):
         data = super().get_context_data(**kwargs)
         data['board_name'] = self.board_name
         return data
 
-        
+# pk 값을 이용한 데이터 처리 클래스뷰        
 class TodoListContentView(View):
     def post(self, request, todo_id):
         method = request.POST.get('_method', 'none')
@@ -93,27 +129,41 @@ class TodoListContentView(View):
         return HttpResponse("forbiden")
 
     def get(self, request, todo_id):
-        todolist = get_object_or_404(TodoList, pk=todo_id)
+        try:
+            todolist = TodoList.objects.get(pk=todo_id)
+        except TodoList.DoesNotExist:
+            return print_error(request, 404)
         return render(request, 'todo/form.html', {
             'content':todolist,
             'priority_choices' : TodoList.PRIORITY_CHOICES
         })
     
     def put(self, request, todo_id):
-        todolist = get_object_or_404(TodoList, pk=todo_id)
+        try:
+            todolist = TodoList.objects.get(pk=todo_id)
+        except TodoList.DoesNotExist:
+            return print_error(request, 404)
         todolist.title = request.POST.get('title', todolist.title)
         todolist.text = request.POST.get('text', todolist.text)
-        deadline = request.POST.get('deadline', todolist.deadline)
         todolist.priority = request.POST.get('priority',todolist.priority)
-        if request.POST.get('setDeadline', 0) == "1":
-            todolist.deadline = parse(deadline).date()
         todolist.is_done = request.POST.get('is_done', todolist.is_done)
+        deadline = request.POST.get('deadline',None)
+
+        if deadline and deadline is not '':
+            deadline = parse(deadline)
+        else:
+            deadline = None
+
+        todolist.deadline = deadline
         if todolist.is_valid():
             todolist.save()
         return HttpResponseRedirect(reverse('todo:index'))
         
 
     def delete(self, request, todo_id):
-        todolist = get_object_or_404(TodoList, pk=todo_id)
+        try:
+            todolist = TodoList.objects.get(pk=todo_id)
+        except TodoList.DoesNotExist:
+            return print_error(request, 404)
         todolist.delete()
         return HttpResponseRedirect(reverse('todo:index'))

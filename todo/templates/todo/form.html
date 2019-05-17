@@ -6,7 +6,12 @@
         {% if content %}
             <h2>{{ content.title }}<small>세부정보</small> <a href="{% url 'todo:index' %}" class="btn btn-default">새글작성</a></h2>
         {% endif %}
+        {% if content %}
+        <form method="post" action="{% url 'todo:todo' content.pk %}" class="todo-form">
+            <input type="text" name="_method" value="put" hidden>
+        {% else %}
         <form method="post" action="{% url 'todo:index' %}" class="todo-form">
+        {% endif %}
             {% csrf_token %}
             <div class="todo-form-inline">
                 <div style="flex:2">
@@ -21,7 +26,7 @@
                     </select>
                 </div>
                 <div style="flex:2">
-                    <input type="date" {% if content.deadline %}value="{{ content.deadline|date:'Y-m-d'}}"{% endif %}>
+                    <input type="date" name="deadline" {% if content.deadline %}value="{{ content.deadline|date:'Y-m-d'}}"{% endif %}>
                 </div>
                 <div style="flex:1">
                     <input class="btn btn-primary" type="submit" value="{% if content %}수정{% else %}작성{% endif %}">
@@ -29,7 +34,7 @@
             </div>
             <div>
                 <div><input class="todo-form-control" type="text" placeholder="해야 할 일(필수입력)" name="title" value="{{ content.title }}" required></div>
-                <div><textarea class="todo-form-control" placeholder="구체적인 설명(선택입력)">{{ content.text }}</textarea></div>
+                <div><textarea name="text" class="todo-form-control" placeholder="구체적인 설명(선택입력)">{{ content.text }}</textarea></div>
             </div>
         </form>
     </seciton>

@@ -31,10 +31,21 @@
                 {{ content.title }}
             </a>
         </td>
+        <!-- 작성일 표시 -->
+        <td class="col-sm-2">
+            <small>
+            {{ content.write_date|date:'y.m.d h:m' }}작성
+            {% ifnotequal content.write_date content.updated_date %}<br>
+            <small>
+                {{content.updated_date|date:'y.m.d h:m'}}수정
+            </small>
+            {% endifnotequal %}
+        </small>
+        </td>
         <!-- 마감기한 표시 -->
-        <td class="col-sm-3">
+        <td class="col-sm-2">
             {% if content.deadline %}
-                <strong>{{ content.deadline }}</strong>까지
+                <strong>{{ content.deadline|date:'y.m.d' }}</strong>까지
             {% else %}
                 -
             {% endif %}

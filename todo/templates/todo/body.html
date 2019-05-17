@@ -1,30 +1,31 @@
+{% load static %}
 <!DOCTYPE html>
 <html lang="ko">
     <head>
         <meta charset="utf-8">
-        <title>{% block title %}{% endblock %}</title>
-        <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.2/css/bootstrap.min.css">
         <meta name="viewport" content="width=device-width, initial-scale=1">
+        <title>{% block title %}{% endblock %}</title>        
+        <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.2/css/bootstrap.min.css">
+        <link rel="stylesheet" href="{% static 'todo/style.css' %}">
     </head>
     <body>
         <header class="page-header">
-            <h1><span class="glyphicon glyphicon-list-alt" aria-hidden="true"></span> To do list<small>할 일 목록 -{% block subtitle %}{% endblock %}</small></h1>
-            <a href="{% url 'todo:index' %}">처음으로</a>
+            <h1><span class="glyphicon glyphicon-list-alt" aria-hidden="true"></span> To do list <small>Today - {% now "Y.m.d" %}</small></h1>
         </header>
         <main class="container">
            {% block content %}
            {% endblock %}
             <article>
-                <section id="to-do-list">
-                    <h2>To do List</h2>
+                <section id="deadline-list" class="todo_section">
                 </section>
-                <section id="done-list">
-                    <h2>done</h2>
+                <section id="to-do-list" class="todo_section">
+                </section>
+                <section id="done-list" class="todo_section">
                 </section>
             </article>
         </main>
-        <footer>
-            <address class="text-right">
+        <footer class="text-right">
+            <address>
                 Ko Kyoungpyo, 단순한 To do List<br>
                 <a href="https://github.com/kgpyo/TODOlistWithDjango">github soruce</a><br>
                 <a href="mailto:kgpyo123@gmail.com">kgpyo123@gmail.com</a>

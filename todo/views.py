@@ -15,23 +15,10 @@ def index(request):
     #글 작성시
     if request.method == "POST":
         return write_post(request)
-
     data = {
-        'deadline_over_count':0,
-        'goal':0.0
-        }
-    todolist = TodoList.objects.filter(is_done=False, deadline__lt=datetime.date.today())
-    
-    data['deadline_over_count'] = todolist.count()
-
-    try:
-        done = TodoList.objects.filter(is_done=True).count()
-        total = TodoList.objects.all().count()
-        data['goal'] = (done/total)*100
-    except:
-        data['goal'] = 0
-
-    return render(request, 'todo/index.html', data)
+        'priority_choices' : TodoList.PRIORITY_CHOICES
+    }
+    return render(request, 'todo/form.html', data)
 
 def write_post(request):
     input_data = {}
@@ -53,41 +40,64 @@ class TodoListDoneView(generic.ListView):
     model = TodoList
     context_object_name = 'to_do_list'
     template_name='todo/list_view.html'
+    board_name = 'Done'
 
     def get_queryset(self):
-        return TodoList.objects.filter(is_done=True)
+        return TodoList.objects.filter(is_done=True).order_by('-write_date')
+
+    def get_context_data(self, **kwargs):
+        data = super().get_context_data(**kwargs)
+        data['board_name'] = self.board_name
+        return data
 
 class TodoListDeadLineIsOverView(generic.ListView):
     model = TodoList
     context_object_name = 'to_do_list'
     template_name='todo/list_view.html'
+    board_name = 'Deadline is over'
 
     def get_queryset(self):
         return TodoList.objects.filter(is_done=False, \
-        deadline__lt=datetime.date.today())
+        deadline__lt=datetime.date.today()).order_by('-write_date')
+
+    def get_context_data(self, **kwargs):
+        data = super().get_context_data(**kwargs)
+        data['board_name'] = self.board_name
+        return data
 
 class TodoListView(generic.ListView):
     model = TodoList
     context_object_name = 'to_do_list'
     template_name='todo/list_view.html'
+    board_name = 'To do List'
 
     def get_queryset(self):
         return TodoList.objects.filter(
             (Q(deadline__gte=datetime.date.today())&Q(is_done=False))|
             (Q(deadline__isnull=True)&Q(is_done=False))
-        )
+        ).order_by('-write_date')
+
+    def get_context_data(self, **kwargs):
+        data = super().get_context_data(**kwargs)
+        data['board_name'] = self.board_name
+        return data
 
         
 class TodoListContentView(View):
     def post(self, request, todo_id):
-        if request.POST['_method'].upper() == 'PUT':
+        method = request.POST.get('_method', 'none')
+        if method.upper() == 'PUT':
             return self.put(request, todo_id)
-        if request.POST['_method'].upper() == 'DELETE':
+        if method.upper() == 'DELETE':
             return self.delete(request, todo_id)
+        return HttpResponse("forbiden")
 
     def get(self, request, todo_id):
         todolist = get_object_or_404(TodoList, pk=todo_id)
-        return render(request, 'todo/content.html', {'content':todolist})
+        return render(request, 'todo/form.html', {
+            'content':todolist,
+            'priority_choices' : TodoList.PRIORITY_CHOICES
+        })
     
     def put(self, request, todo_id):
         todolist = get_object_or_404(TodoList, pk=todo_id)

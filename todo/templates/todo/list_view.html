@@ -1,50 +1,62 @@
-
-{% if to_do_list %}
+<h2>{{ board_name }} {% if to_do_list %}<span class="todo-badge">{{ to_do_list.count }}</span>{% endif %}</h2>
+{% if not to_do_list %}
+<div class="alert alert-info" role="alert">데이터가 없습니다.</div>
+{% else %}
 <table class="table table-hover">
-    {% for todo in to_do_list %}
-{% if todo.priority == 1 %}
-<tr class="row">
-{% elif todo.priority == 2 %}
-<tr class="row success">
-{% elif todo.priority == 3 %}
-<tr class="row warning">
-{% elif todo.priority == 4 %}
-<tr class="row danger">
-{% endif %}
-        <td class="col-sm-1">
-            <form method="post" action="{% url 'todo:todo' todo.pk %}">
+    {% for content in to_do_list %}
+    <tr>
+        <td class="col-sm-8">
+            <!-- 데이터 삭제 -->
+            <form method="post" action="{% url 'todo:todo' content.pk %}" style="display: inline">
                 {% csrf_token %}
                 <input type="hidden" name="_method" value="delete">
-                <input type="submit" class="btn btn-danger" value="x">
-            </form>
+                <button type="submit" title="글 삭제" class="hidden-button">               
+                    <span class="glyphicon glyphicon-remove" aria-hidden="true"></span>
+                </button>
+            </form> 
+            <!-- 우선순위 표기 -->
+            {% if content.priority == 1 %}
+            <span class="category-badge category-badge-1">
+            {% elif content.priority == 2 %}
+            <span class="category-badge category-badge-2">
+            {% elif content.priority == 3 %}
+            <span class="category-badge category-badge-3">
+            {% elif content.priority == 4 %}
+            <span class="category-badge category-badge-4">
+            {% endif %}
+            {{content.get_priority_display}}
+            </span>
+            <!-- TODO 제목 -->
+            <a style="display: inline" href="{% url 'todo:todo' content.pk %}">
+                {{ content.title }}
+            </a>
         </td>
-        <td class="col-sm-8">
-            [순위: {{ todo.priority  }}]
-            <a href="{% url 'todo:todo' todo.pk %}">{{todo.title}}</a>
-        </td> <!-- 색깔로 우선순위 표시-->
+        <!-- 마감기한 표시 -->
         <td class="col-sm-3">
-            {% if todo.deadline %}
-            {{ todo.deadline }}
+            {% if content.deadline %}
+                <strong>{{ content.deadline }}</strong>까지
             {% else %}
-            미지정
+                -
             {% endif %}
         </td>
+        <!-- 완료/미완료 처리 -->
         <td class="col-sm-2">
-            <form method="post" action="{% url 'todo:todo' todo.pk %}">
+            <form method="post" action="{% url 'todo:todo' content.pk %}">
                 {% csrf_token %}
-                <input type="hidden" name="_method" value="put">
-                {% if todo.is_done == True %}
-                <input type="submit" class="btn btn-danger" value="X">
+                <input type="text" name="_method" value="put" hidden>
+                {% if content.is_done == True %}
                 <input type="hidden" name="is_done" value=0>
+                <button type="submit" class="todo-checkbox" title="완료 취소">
+                    <span class="glyphicon glyphicon-chevron-down red" aria-hidden="true"></span>
+                </button>
                 {% else %}
-                <input type="submit" class="btn btn-danger" value="O">
-                <input type="hidden" name="is_done" value=1>
+                <input type="hidden" name="is_done" value=1 title="완료">
+                    <button type="submit" class="todo-checkbox">
+                </button>
                 {% endif %}
             </form>
         </td>
     </tr>
     {% endfor %}
 </table>
-{% else %}
-    <div class="alert alert-info" role="alert">데이터가 없습니다.</div>
 {% endif %}

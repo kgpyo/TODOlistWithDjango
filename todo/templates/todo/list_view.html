@@ -3,6 +3,12 @@
 <div class="alert alert-info" role="alert">데이터가 없습니다.</div>
 {% else %}
 <table class="table table-hover">
+    <tr>
+        <th>제목</th>
+        <th>작성일</th>
+        <th>마감기한</th>
+        <th></th>
+    </tr>
     {% for content in to_do_list %}
     <tr>
         <td class="col-sm-8">
@@ -35,11 +41,13 @@
         <td class="col-sm-2">
             <small>
             {{ content.write_date|date:'y.m.d h:m' }}작성
+            {% if content.updated_date %}
             {% ifnotequal content.write_date content.updated_date %}<br>
             <small>
                 {{content.updated_date|date:'y.m.d h:m'}}수정
             </small>
             {% endifnotequal %}
+            {% endif %}
         </small>
         </td>
         <!-- 마감기한 표시 -->

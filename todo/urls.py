@@ -8,4 +8,5 @@ urlpatterns = [
     path('done', views.TodoListDoneView.as_view(), name='done'),
     path('deadline-is-over', views.TodoListDeadLineIsOverView.as_view(), name='deadline'),
     path('to-do', views.TodoListView.as_view(), name='todolist'),
+    path('<int:todo_id>/done', views.changeDone, name='done_change')
 ]

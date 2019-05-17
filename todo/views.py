@@ -5,6 +5,7 @@ from django.urls import reverse
 from django.views import View, generic
 from django.db.models import Q
 from dateutil.parser import parse
+from django.db.models import F
 import datetime
 
 
@@ -89,7 +90,7 @@ class TodoListDeadLineIsOverView(generic.ListView):
     model = TodoList
     context_object_name = 'to_do_list'
     template_name='todo/list_view.html'
-    board_name = '마감기한이 끝난 일'
+    board_name = '마감기한  '
 
     def get_queryset(self):
         return TodoList.objects.filter(is_done=False, \
@@ -167,3 +168,11 @@ class TodoListContentView(View):
             return print_error(request, 404)
         todolist.delete()
         return HttpResponseRedirect(reverse('todo:index'))
+
+def changeDone(request, todo_id):
+    try:
+        todolist = TodoList.objects.get(pk=pk)
+    except TodoList.DoesNotExist:
+        return print_error(request, 404)
+    todolist.is_done = True if F('is_done') is False else False
+    return HttpResponseRedirect(reverse('todo:index'))

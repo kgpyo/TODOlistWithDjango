@@ -33,7 +33,9 @@
                 </div>
             </div>
             <div>
-                <div><input class="todo-form-control" type="text" placeholder="해야 할 일(필수입력)" name="title" value="{{ content.title }}" required></div>
+                <div>
+                    <input class="todo-form-control" type="text" placeholder="해야 할 일(필수입력)" name="title" value="{{ content.title }}" style="height:3em" required>
+                </div>
                 <div><textarea rows="5" style="overflow: visible;" name="text" placeholder="구체적인 설명(선택입력)">{{ content.text }}</textarea></div>
             </div>
         </form>

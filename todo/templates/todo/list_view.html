@@ -4,23 +4,27 @@
 {% else %}
 <table class="table table-hover">
     <tr>
+        <th>삭제</th>
         <th>제목</th>
         <th>작성일</th>
         <th>마감기한</th>
-        <th></th>
+        <th>완료</th>
     </tr>
     {% for content in to_do_list %}
     <tr>
-        <td class="col-sm-8">
+        <td class="col-sm-1">
             <!-- 데이터 삭제 -->
             <form method="post" action="{% url 'todo:todo' content.pk %}" style="display: inline">
                 {% csrf_token %}
                 <input type="hidden" name="_method" value="delete">
-                <button type="submit" title="글 삭제" class="hidden-button">               
+                <button type="submit" title="글 삭제" class="hidden-button" onclick="return confirm('삭제하시겠습니까?')">               
                     <span class="glyphicon glyphicon-remove" aria-hidden="true"></span>
                 </button>
             </form> 
-            <!-- 우선순위 표기 -->
+        </td>
+        <td class="col-sm-7">
+            <a href="{% url 'todo:todo' content.pk %}">
+                <!-- 우선순위 표기 -->
             {% if content.priority == 1 %}
             <span class="category-badge category-badge-1">
             {% elif content.priority == 2 %}
@@ -33,22 +37,14 @@
             {{content.get_priority_display}}
             </span>
             <!-- TODO 제목 -->
-            <a style="display: inline" href="{% url 'todo:todo' content.pk %}">
                 {{ content.title }}
             </a>
         </td>
         <!-- 작성일 표시 -->
         <td class="col-sm-2">
             <small>
-            {{ content.write_date|date:'y.m.d h:m' }}작성
-            {% if content.updated_date %}
-            {% ifnotequal content.write_date content.updated_date %}<br>
-            <small>
-                {{content.updated_date|date:'y.m.d h:m'}}수정
+            {{ content.write_date|date:'y.m.d h:m' }}
             </small>
-            {% endifnotequal %}
-            {% endif %}
-        </small>
         </td>
         <!-- 마감기한 표시 -->
         <td class="col-sm-2">
@@ -60,20 +56,15 @@
         </td>
         <!-- 완료/미완료 처리 -->
         <td class="col-sm-2">
-            <form method="post" action="{% url 'todo:todo' content.pk %}">
-                {% csrf_token %}
-                <input type="text" name="_method" value="put" hidden>
-                {% if content.is_done == True %}
-                <input type="hidden" name="is_done" value=0>
-                <button type="submit" class="todo-checkbox" title="완료 취소">
-                    <span class="glyphicon glyphicon-chevron-down red" aria-hidden="true"></span>
-                </button>
-                {% else %}
-                <input type="hidden" name="is_done" value=1 title="완료">
-                    <button type="submit" class="todo-checkbox">
-                </button>
-                {% endif %}
-            </form>
+            {% if content.is_done == True %}
+            <button onclick="location.href='{% url 'todo:incomplete' content.pk %}'" class="todo-checkbox" title="완료 취소">
+                <span class="glyphicon glyphicon-chevron-down red" aria-hidden="true"></span>
+            </button>
+            {% else %}
+            <button onclick="location.href='{% url 'todo:complete' content.pk %}'" class="todo-checkbox" title="완료">
+            <span aria-hidden="true"></span>
+            </button>
+            {% endif %}
         </td>
     </tr>
     {% endfor %}

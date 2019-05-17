@@ -90,7 +90,7 @@ class TodoListDeadLineIsOverView(generic.ListView):
     model = TodoList
     context_object_name = 'to_do_list'
     template_name='todo/list_view.html'
-    board_name = '마감기한  '
+    board_name = '만료, 하지못한일'
 
     def get_queryset(self):
         return TodoList.objects.filter(is_done=False, \
@@ -127,7 +127,7 @@ class TodoListContentView(View):
             return self.put(request, todo_id)
         if method.upper() == 'DELETE':
             return self.delete(request, todo_id)
-        return HttpResponse("forbiden")
+        return print_error(request, 403, "forbiden")
 
     def get(self, request, todo_id):
         try:
@@ -169,10 +169,23 @@ class TodoListContentView(View):
         todolist.delete()
         return HttpResponseRedirect(reverse('todo:index'))
 
-def changeDone(request, todo_id):
+def complete(request, todo_id):
     try:
-        todolist = TodoList.objects.get(pk=pk)
+        todolist = TodoList.objects.get(pk=todo_id)
     except TodoList.DoesNotExist:
         return print_error(request, 404)
-    todolist.is_done = True if F('is_done') is False else False
+    todolist.is_done = True
+    todolist.save()
     return HttpResponseRedirect(reverse('todo:index'))
+
+def incomplete(request, todo_id):
+    try:
+        todolist = TodoList.objects.get(pk=todo_id)
+    except TodoList.DoesNotExist:
+        return print_error(request, 404)
+    todolist.is_done = False
+    todolist.save()
+    return HttpResponseRedirect(reverse('todo:index'))
+
+def todoGetExpired(request):
+    pass

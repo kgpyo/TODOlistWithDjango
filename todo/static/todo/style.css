@@ -4,15 +4,17 @@
     margin: 0 0 10px 0;
     box-shadow: 1px 1px 2px 1px #D8D8D8;
 }
-
+/*
 .todo_section:hover{
     background-color:#fff;
     box-shadow: 1px 1px 2px 1px #000;
 }
-
+*/
 .todo_section > table a {
     display:block;
     color:#000;
+    width:100%;
+    height:100%;
 }
 
 .todo_section > table a:hover {
@@ -87,7 +89,7 @@ footer {
     -ms-display: flexbox;
     display: flex;
     flex-direction: row;
-    justify-content: space-around
+    justify-content: space-around;
 }
 
 .todo-form input, .todo-form select, .todo-form textarea{
@@ -95,7 +97,6 @@ footer {
     border:1px dashed;
     width:100%;
     height:100%;
-    margin: 5px;
 }
 
 .todo-form div {

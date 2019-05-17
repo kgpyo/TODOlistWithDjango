@@ -74,7 +74,7 @@ class TodoListDoneView(generic.ListView):
     model = TodoList
     context_object_name = 'to_do_list'
     template_name='todo/list_view.html'
-    board_name = 'Done'
+    board_name = '완료'
 
     def get_queryset(self):
         return TodoList.objects.filter(is_done=True).\
@@ -89,7 +89,7 @@ class TodoListDeadLineIsOverView(generic.ListView):
     model = TodoList
     context_object_name = 'to_do_list'
     template_name='todo/list_view.html'
-    board_name = 'Deadline is over'
+    board_name = '마감기한이 끝난 일'
 
     def get_queryset(self):
         return TodoList.objects.filter(is_done=False, \
@@ -105,7 +105,7 @@ class TodoListView(generic.ListView):
     model = TodoList
     context_object_name = 'to_do_list'
     template_name='todo/list_view.html'
-    board_name = 'To do List'
+    board_name = '할 일 목록'
 
     def get_queryset(self):
         return TodoList.objects.filter(

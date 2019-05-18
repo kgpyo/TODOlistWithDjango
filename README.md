@@ -1,6 +1,6 @@
 # Todolist
 - 모든 리스트는 우선순위 - 작성날짜 순으로 정렬됩니다.
-
+- test : http://todolistdjangotest.ml:8000/todo/
 ## 환경
 - Django 2.2.1
 - python 3.6
@@ -53,8 +53,10 @@
 1. apt-get update
 2. apt-get install nginx
 3. todo_nginx.conf 파일을 서버 환경에 맞게 설정
-4. sudo ln -s /경로/TodolistWithDjango/mysite_nginx.conf /etc/nginx/sites-enabled/
-sudo ln -s ~/TodolistWithDjango/mysite_nginx.conf /etc/nginx/sites-enabled/
-4. virtualenv 활성화된 상태에서... (현재위치 ~/TodolistWitdhDjango)
-  - ``` uwsgi --http :8000 --module todolistdjango.wsgi --daemonize  /home/django-server/log ```
+4. 심볼릭 링크 생성
+   - ``` sudo ln -s /경로/TodolistWithDjango/todo_nginx.conf /etc/nginx/sites-enabled/ ```
+  ex) ``` sudo ln -s ~/TodolistWithDjango/todo_nginx.conf /etc/nginx/sites-enabled/ ```
+4. virtualenv 활성화된 상태에서... (TodolistWitdhDjango 폴더 안에서 실행하셔야 합니다.)
+  - ``` uwsgi --socket :8001 --module todolist.wsgi --daemonize  /log 저장할 경로/log ```
+  - ex ``` uwsgi --socket :8001 --module todolist.wsgi --daemonize  /home/django-server/log ```
 5. service nginx reload

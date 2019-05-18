@@ -3,8 +3,8 @@
 {% block content %}
 <article>
     <section class="todo_section">
-        <h2>ERROR {{ error_code }}</h2>
-        {{ error_message }}<br />
+        <h2>ERROR 404</h2>
+        이미 삭제되어 존재하지 않는 게시글이거나 존재하지 않는 페이지입니다.<br />
         <a href="{% url 'todo:index' %}" class="btn btn-default">처음으로</a>
 </section>
 </article>

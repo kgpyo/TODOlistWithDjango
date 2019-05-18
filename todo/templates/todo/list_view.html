@@ -1,8 +1,11 @@
+{% load static %}
+<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.2/css/bootstrap.min.css">
+<link rel="stylesheet" href="{% static 'todo/style.css' %}">
 <h2>{{ board_name }} {% if to_do_list %}<span class="todo-badge">{{ to_do_list.count }}</span>{% endif %}</h2>
 {% if not to_do_list %}
 <div class="alert alert-info" role="alert">데이터가 없습니다.</div>
 {% else %}
-<table class="table table-hover">
+<table class="table table-hover to-do-table">
     <tr>
         <th>삭제</th>
         <th>제목</th>
@@ -14,7 +17,7 @@
     <tr>
         <td class="col-sm-1">
             <!-- 데이터 삭제 -->
-            <form method="post" action="{% url 'todo:todo' content.pk %}" style="display: inline">
+            <form method="post" action="{% url 'todo:detail' content.pk %}" style="display: inline">
                 {% csrf_token %}
                 <input type="hidden" name="_method" value="delete">
                 <button type="submit" title="글 삭제" class="hidden-button" onclick="return confirm('삭제하시겠습니까?')">               
@@ -23,7 +26,7 @@
             </form> 
         </td>
         <td class="col-sm-7">
-            <a href="{% url 'todo:todo' content.pk %}">
+            <a href="{% url 'todo:detail' content.pk %}">
                 <!-- 우선순위 표기 -->
             {% if content.priority == 1 %}
             <span class="category-badge category-badge-1">

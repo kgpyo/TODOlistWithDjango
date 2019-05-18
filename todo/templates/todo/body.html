@@ -1,4 +1,4 @@
-{% load static %}
+{% load staticfiles  %}
 <!DOCTYPE html>
 <html lang="ko">
     <head>
@@ -39,7 +39,7 @@
             $.get("{% url 'todo:done' %}", function(html) {
                 $('#done-list').append(html)
             })
-            $.get("{% url 'todo:deadline' %}", function(html) {
+            $.get("{% url 'todo:expired' %}", function(html) {
                 $('#deadline-list').append(html)
             })
         </script>

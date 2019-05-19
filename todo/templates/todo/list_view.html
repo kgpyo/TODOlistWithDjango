@@ -9,7 +9,6 @@
     <tr>
         <th>삭제</th>
         <th>제목</th>
-        <th>작성일</th>
         <th>마감기한</th>
         <th>완료</th>
     </tr>
@@ -25,7 +24,7 @@
                 </button>
             </form> 
         </td>
-        <td class="col-sm-7">
+        <td class="col-sm-9">
             <a href="{% url 'todo:detail' content.pk %}">
                 <!-- 우선순위 표기 -->
             {% if content.priority == 1 %}
@@ -41,18 +40,16 @@
             </span>
             <!-- TODO 제목 -->
                 {{ content.title }}
+                <!-- 작성일 표시 -->
+                <small>
+                    - {{ content.write_date|date:'y.m.d' }} 작성
+                </small>
             </a>
-        </td>
-        <!-- 작성일 표시 -->
-        <td class="col-sm-2">
-            <small>
-            {{ content.write_date|date:'y.m.d h:m' }}
-            </small>
         </td>
         <!-- 마감기한 표시 -->
         <td class="col-sm-2">
             {% if content.deadline %}
-                <strong>{{ content.deadline|date:'y.m.d' }}</strong>까지
+                <strong>{{ content.deadline|date:'y.m.d' }}</strong>
             {% else %}
                 -
             {% endif %}

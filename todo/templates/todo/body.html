@@ -12,9 +12,13 @@
         <header class="page-header">
             <h1><span class="glyphicon glyphicon-list-alt" aria-hidden="true"></span> To do list <small>Today - {% now "Y.m.d" %}</small></h1>
         </header>
-        <main class="container">
-           {% block content %}
-           {% endblock %}
+        <main class="container-fluid section_flex">
+            <article>
+                <seciton class="todo_section">
+                    {% block content %}
+                    {% endblock %}
+                </seciton>
+            </article>
             <article>
                 <section id="deadline-list" class="todo_section">
                 </section>

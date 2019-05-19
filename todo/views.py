@@ -46,6 +46,8 @@ class TodoListDetailView(generic.View):
         return render(request, 'todo/form.html', {
             'modify':True,
             'todo_id':todo_id,
+            'write_date':todolist.write_date,
+            'updated_date':todolist.updated_date,
             'form':form
         })
     

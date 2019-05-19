@@ -1,11 +1,11 @@
 {% extends 'todo/body.html' %}
 {% block title %}To do List{% endblock %}
 {% block content %}
-<article>
-    <seciton class="todo_section">
         {{ form.management_form }}
         {% if modify %}
             <h2>{{ form.title.value }}<small>세부정보</small> <a href="{% url 'todo:index' %}" class="btn btn-default">새글작성</a></h2>
+        {% else %}
+            <h2>할 일 작성</h2>
         {% endif %}
         {% if modify %}
         <form method="post" action="{% url 'todo:detail' todo_id %}" class="todo-form">
@@ -28,8 +28,11 @@
             <div>
                 <div>{{ form.title }}</div>
                 <div>{{ form.text }}</div>
+                {% if modify %}<div><label for="is_done">완료 처리</label>{{ form.is_done }}</div>{% endif %}
             </div>
         </form>
-    </seciton>
-</article>
+        {% if modify %}
+            - {{ write_date|date:'y.m.d h:m:s' }} 작성 
+            {% if write_date != updated_date %}<br> - {{ updated_date|date:'y.m.d h:m:s' }} 최종수정 {% endif %}
+        {% endif %}
 {% endblock %}

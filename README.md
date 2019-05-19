@@ -55,8 +55,9 @@
 3. todo_nginx.conf 파일을 서버 환경에 맞게 설정
 4. 심볼릭 링크 생성
    - ``` sudo ln -s /경로/TodolistWithDjango/todo_nginx.conf /etc/nginx/sites-enabled/ ```
-  ex) ``` sudo ln -s ~/TodolistWithDjango/todo_nginx.conf /etc/nginx/sites-enabled/ ```
+   - ex) ``` sudo ln -s ~/TodolistWithDjango/todo_nginx.conf /etc/nginx/sites-enabled/ ```
 4. virtualenv 활성화된 상태에서... (TodolistWitdhDjango 폴더 안에서 실행하셔야 합니다.)
+  - 프로젝트의 settgins.py 에서 debug = False 로 설정
   - ``` uwsgi --socket :8001 --module todolist.wsgi --daemonize  /log 저장할 경로/log ```
   - ex ``` uwsgi --socket :8001 --module todolist.wsgi --daemonize  /home/django-server/log ```
 5. service nginx reload

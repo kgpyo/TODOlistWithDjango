@@ -5,7 +5,7 @@ from .models import *
 class TodoListForm(forms.ModelForm):
     class Meta:
         model = TodoList
-        fields = ('priority', 'deadline','title','text')
+        fields = ('priority', 'deadline','title','text','is_done')
 
         widgets = {
             'deadline' : forms.DateInput(attrs={'type':'date'}),
@@ -15,7 +15,7 @@ class TodoListForm(forms.ModelForm):
             }),
             'text': forms.Textarea(attrs={
                 'placeholder':'구체적인 설명(선택입력)',
-            })
+            }),
         }
     
     def clean(self):

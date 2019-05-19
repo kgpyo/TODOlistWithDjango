@@ -106,7 +106,7 @@ footer {
     justify-content: space-around;
 }
 
-.todo-form input[type=date], .todo-form input[type=text], .todo-form select, .todo-form textarea{
+.todo-form input[type=submit], .todo-form input[type=date], .todo-form input[type=text], .todo-form select, .todo-form textarea{
     border-radius: 5px;
     border:1px dashed;
     width:100%;

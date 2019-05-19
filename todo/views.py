@@ -67,8 +67,17 @@ class TodoListDetailView(generic.View):
 
 
 """
-미완료 목록, 완료 목록, 완료하지 못하고 마감기한이 지난 목록 뷰
+전체 목록, 미완료 목록, 완료 목록, 완료하지 못하고 마감기한이 지난 목록 뷰
 """
+class TodoListAllView(generic.ListView):
+    model = TodoList
+    context_object_name = 'to_do_list'
+    template_name='todo/list_view.html'
+    extra_context={'board_name':'전체'}
+
+    def get_queryset(self):
+        return TodoList.objects.all()
+
 class TodoListCompleteView(generic.ListView):
     model = TodoList
     context_object_name = 'to_do_list'

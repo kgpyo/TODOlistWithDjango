@@ -6,7 +6,7 @@
 .section_flex > article {
     width:auto;
 }
-@media ( min-width: 1440px ) {
+@media ( min-width: 768px ) {
     .section_flex > article {
         width:50%;
     }

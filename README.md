@@ -7,6 +7,7 @@
 - bootstrap
 
 ## url
+- GET ~/todo/all 전체목록 보기
 
 - GET ~/todo/ TODO 메인페이지 (done, expired, to-do-list 내용을 불러옵니다.)- 
 - POST ~/todo/ 새로운 TODO 작성
